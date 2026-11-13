@@ -1,4 +1,4 @@
-# Video Generation Skill (`video-generation`)
+# Video Generation Skill
 
 An agentic skill for turning any topic, script, or concept into a finished, polished video from the command line.
 
