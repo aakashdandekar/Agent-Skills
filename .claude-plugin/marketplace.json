@@ -1,10 +1,10 @@
 {
-  "name": "video-generation-skills",
+  "name": "agent-skills",
   "owner": {
     "name": "Aakash Dandekar"
   },
   "metadata": {
-    "description": "Topic-to-Video generation pipeline skill for AI agents"
+    "description": "Curated collection of agent skills for Antigravity, Claude Code, Cursor, Codex, and OpenCode"
   },
   "plugins": [
     {
