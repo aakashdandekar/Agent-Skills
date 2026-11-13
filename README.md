@@ -106,8 +106,12 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-#### 3. Expose the `video` Command
-To allow your agent to execute `video` from any working directory, configure a wrapper or alias:
+#### 3. Command Execution & Dynamic Resolution
+The skill is designed to work out-of-the-box without requiring a global binary:
+1. **Dynamic Alias Check**: The agent automatically checks if a `video` alias or wrapper command exists in your environment.
+2. **Direct Execution**: If no alias is found, the agent automatically locates MoneyPrinterTurbo's `cli.py` and its virtual environment interpreter (`.venv/bin/python`).
+
+*(Optional)* If you would like a convenient `video` command for manual terminal use, you can configure a wrapper script:
 
 ```bash
 cat << 'EOF' > ~/.local/bin/video
@@ -115,6 +119,10 @@ cat << 'EOF' > ~/.local/bin/video
 exec /path/to/MoneyPrinterTurbo/.venv/bin/python /path/to/MoneyPrinterTurbo/cli.py "$@"
 EOF
 chmod +x ~/.local/bin/video
+```
+or add an alias to your shell configuration (`~/.bashrc` or `~/.zshrc`):
+```bash
+alias video="/path/to/MoneyPrinterTurbo/.venv/bin/python /path/to/MoneyPrinterTurbo/cli.py"
 ```
 
 #### 4. Configure `config.toml`
