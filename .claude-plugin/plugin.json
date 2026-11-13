@@ -1,0 +1,6 @@
+{
+  "name": "video-generation",
+  "version": "1.0.0",
+  "description": "Topic-to-Video generation pipeline and CLI assembly for AI agents.",
+  "skills": ["./skills/video-generation"]
+}

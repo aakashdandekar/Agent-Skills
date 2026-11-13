@@ -1,0 +1,17 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Output media & tasks
+storage/
+*.mp4
+*.mp3
+*.wav
+*.srt
+*.log
+
+# Python / Environment
+__pycache__/
+*.pyc
+.venv/
+.env
