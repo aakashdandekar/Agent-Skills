@@ -126,24 +126,6 @@ cp config.example.toml config.toml
 
 ---
 
-## Repository Structure
-
-```text
-Agent-Skills/
-├── .claude-plugin/
-│   ├── marketplace.json     # Marketplace catalog definition
-│   └── plugin.json          # Plugin specification
-├── skills/
-│   └── video-generation/
-│       └── SKILL.md         # Video generation pipeline specification
-├── install.sh               # Modular multi-agent installer
-├── .gitignore
-├── LICENSE                  # Apache 2.0 License
-└── README.md
-```
-
----
-
 ## Acknowledgements & Special Thanks
 
 Special thanks to **[@harry0703](https://github.com/harry0703)**, the creator of **[MoneyPrinterTurbo](https://github.com/harry0703/MoneyPrinterTurbo)**, for building and open-sourcing such an exceptional automated video generation engine. The `video-generation` skill's local timeline compositing, Edge TTS synthesis, subtitle burning, and media orchestration are made possible by their fantastic work!
