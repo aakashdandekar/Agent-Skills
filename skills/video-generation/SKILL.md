@@ -1,31 +1,38 @@
 ---
 name: video-generation
-description: Turn any topic, idea, or script into a finished video using the structured Topic-to-Video generation pipeline and the local `video` CLI tool (MoneyPrinterTurbo). Use when the user asks to create, script, storyboard, narrate, or assemble videos, reels, shorts, or explainers.
+description: Turn any topic, idea, or script into a finished video using the structured Topic-to-Video generation pipeline and MoneyPrinterTurbo's CLI (cli.py). Use when the user asks to create, script, storyboard, narrate, or assemble videos, reels, shorts, or explainers.
 argument-hint: "[topic, script, or requirements]"
 ---
 
 # Video Generation Skill (`video-generation`)
 
-A complete, production-grade pipeline for transforming raw ideas and topics into finished, polished videos. Combines structured creative direction (briefing, research, scriptwriting, shot-listing) with local command-line assembly via the `video` command (MoneyPrinterTurbo CLI).
+A complete, production-grade pipeline for transforming raw ideas and topics into finished, polished videos. Combines structured creative direction (briefing, research, scriptwriting, shot-listing) with local command-line assembly via MoneyPrinterTurbo's CLI (`cli.py` or configured alias).
 
 ---
 
-## Preflight Check 1: MoneyPrinterTurbo Availability
+## Preflight Check 1: MoneyPrinterTurbo Availability & Command Resolution
 
-Before running the video generation pipeline, verify that MoneyPrinterTurbo is available:
+Before running the video generation pipeline, verify that MoneyPrinterTurbo is available and resolve the execution command:
 
-1. **Check for the `video` command in PATH**:
+1. **Check for configured alias, function, or wrapper script**:
    ```bash
-   which video || command -v video
+   alias video 2>/dev/null || type video 2>/dev/null || which video 2>/dev/null
    ```
-2. **If `video` is not found, locate MoneyPrinterTurbo's `cli.py`**:
+   If a `video` alias or wrapper exists in the shell or PATH, use it directly (e.g. `video [options]`).
+
+2. **If no alias or command exists, dynamically locate MoneyPrinterTurbo's `cli.py`**:
    ```bash
    find ~ -name "cli.py" -path "*/MoneyPrinterTurbo/*" 2>/dev/null | head -n 1
    ```
-   If found, invoke commands using that directory's Python interpreter and `cli.py`.
+   - From the discovered directory (e.g. `~/Applications/MoneyPrinterTurbo`):
+     - Identify the virtual environment Python interpreter (e.g. `<MoneyPrinterTurbo_DIR>/.venv/bin/python`). If no `.venv` is present, fallback to the system `python3`.
+     - Construct the direct execution command:
+       ```bash
+       <MoneyPrinterTurbo_DIR>/.venv/bin/python <MoneyPrinterTurbo_DIR>/cli.py [options]
+       ```
 
 > [!IMPORTANT]
-> If neither the `video` command nor MoneyPrinterTurbo's `cli.py` can be located, **stop and prompt the user to install MoneyPrinterTurbo first**:
+> If neither an alias nor MoneyPrinterTurbo's `cli.py` can be located, **stop and prompt the user to install MoneyPrinterTurbo first**:
 >
 > *"MoneyPrinterTurbo is required for video assembly and rendering, but was not found on your system. Please install it first from https://github.com/harry0703/MoneyPrinterTurbo before proceeding with video generation."*
 
@@ -99,7 +106,7 @@ flowchart TD
     F --> G["5. Shot List (Linchpin Storyboard)"]
     G --> H["6. Voiceover Synthesis (TTS / Audio)"]
     H --> I["7. Visuals per Scene (Stock / Local / Motion)"]
-    I --> J["8. Timeline Assembly (video CLI)"]
+    I --> J["8. Timeline Assembly (MoneyPrinterTurbo CLI)"]
     J --> K["9. QC, Metadata & Final MP4 Delivery"]
 ```
 
@@ -155,7 +162,7 @@ The shot list bridges the script with visual and audio generation. Split the scr
 ### 5. Generate the Voiceover
 Synthesize speech from the narration.
 - **Timing Authority Rule**: The **actual** duration of generated audio files (not the estimated duration from step 4) becomes the definitive timeline anchor for scene pacing and visual cuts.
-- In unified execution, the `video` command handles TTS automatically via Edge TTS (free, high quality).
+- In unified execution, MoneyPrinterTurbo handles TTS automatically via Edge TTS (free, high quality).
 - For custom voiceovers or pre-recorded audio, clean the audio (using any approved audio cleaning skills) and supply `--custom-audio-file <path>`.
 
 ### 6. Source or Generate Visuals per Scene
@@ -203,7 +210,7 @@ video-<short-title>-<datetime>/
 - *Example folder*: `video-deep-sea-creatures-20261113-171530/`
 
 ### 3. Asset Delivery & Organization
-When the `video` command finishes rendering in MoneyPrinterTurbo's internal task storage:
+When MoneyPrinterTurbo finishes rendering in internal task storage:
 1. Create the timestamped folder in the project directory:
    ```bash
    mkdir -p "<project_dir>/video-<short-title>-<datetime>"
@@ -219,12 +226,15 @@ When the `video` command finishes rendering in MoneyPrinterTurbo's internal task
 
 ## Command Execution & Task Outputs
 
-The pipeline is driven by MoneyPrinterTurbo (`video` command or `python cli.py`):
-- **Command Invocation**: Run via `video` (if installed in PATH or aliased) or directly using the environment's Python interpreter with `cli.py`:
+The pipeline is driven by MoneyPrinterTurbo's CLI (`cli.py` or configured alias):
+- **Command Invocation**:
+  Run via detected alias/command (if present) or directly using the virtual environment Python interpreter with `cli.py`:
   ```bash
+  # If alias or wrapper exists:
   video [options]
-  # OR
-  python cli.py [options]
+
+  # Direct execution via python:
+  <MoneyPrinterTurbo_DIR>/.venv/bin/python <MoneyPrinterTurbo_DIR>/cli.py [options]
   ```
 - **Configuration**: Configured via `config.toml` inside the MoneyPrinterTurbo directory (contains API keys, TTS defaults, and LLM providers).
 - **Task Output Structure**: Task outputs are written inside MoneyPrinterTurbo's `storage/tasks/<task_id>/`:
@@ -238,13 +248,15 @@ The pipeline is driven by MoneyPrinterTurbo (`video` command or `python cli.py`)
 
 ---
 
-## Execution Modes with `video`
+## Execution Modes & Recipes
+
+*(Note: In the recipes below, replace `python cli.py` with your resolved command: either your configured `video` alias or `<MoneyPrinterTurbo_DIR>/.venv/bin/python <MoneyPrinterTurbo_DIR>/cli.py`)*
 
 ### Mode A: End-to-End Orchestration (Recommended)
 The agent drafts the script, plans the shot list, and executes the complete video render in one command:
 
 ```bash
-video \
+python cli.py \
   --video-script "Deep beneath the ocean, creatures create their own light. Over 75 percent of deep-sea animals produce bioluminescence to hunt, mate, and survive in eternal darkness. Subscribe to dive deeper into the abyss." \
   --video-terms "bioluminescence,deep sea jellyfish,ocean abyss,underwater glowing" \
   --video-aspect 9:16 \
@@ -262,25 +274,25 @@ Use `--stop-at` to inspect or iterate on intermediate assets without rendering t
 
 1. **Generate or test script only**:
    ```bash
-   video --video-subject "Origin of Coffee" --stop-at script
+   python cli.py --video-subject "Origin of Coffee" --stop-at script
    ```
 2. **Generate and inspect voiceover audio**:
    ```bash
-   video --video-script "Your script here" --voice-name en-US-JennyNeural --stop-at audio
+   python cli.py --video-script "Your script here" --voice-name en-US-JennyNeural --stop-at audio
    ```
 3. **Generate subtitles**:
    ```bash
-   video --video-script "Your script here" --stop-at subtitle
+   python cli.py --video-script "Your script here" --stop-at subtitle
    ```
 4. **Download / inspect footage**:
    ```bash
-   video --video-script "Your script here" --video-source pexels --stop-at materials
+   python cli.py --video-script "Your script here" --video-source pexels --stop-at materials
    ```
 
 ### Mode C: Assembling Local Assets & Screen Recordings
 When the user has recorded clips, slides, or local images:
 ```bash
-video \
+python cli.py \
   --video-script "Here is a quick overview of our new feature release. First, notice the updated dashboard. Next, review the live analytics." \
   --video-source local \
   --video-materials "./slide1.png,./screen_recording.mp4,./slide2.png" \
