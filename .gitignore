@@ -15,3 +15,6 @@ __pycache__/
 *.pyc
 .venv/
 .env
+
+# Local contributor / workflow docs
+ADDING_A_SKILL.md

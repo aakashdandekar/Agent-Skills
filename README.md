@@ -126,25 +126,6 @@ cp config.example.toml config.toml
 
 ---
 
-## Adding a New Skill
-
-1. Create a directory: `skills/<skill-name>/`
-2. Add a `SKILL.md` with standard YAML frontmatter:
-   ```markdown
-   ---
-   name: my-new-skill
-   description: When and how the agent should use this skill.
-   ---
-
-   # Skill Title
-   Instructions and workflows...
-   ```
-3. Register it in `.claude-plugin/marketplace.json` under `plugins`.
-4. Add a row to the **Available Skills** table above.
-5. Run `./install.sh <skill-name>` to link it locally.
-
----
-
 ## Repository Structure
 
 ```text
