@@ -178,6 +178,42 @@ Run a QC inspection before delivering the final video:
 - [ ] **Audio Mix**: Is the voice clear over the background music?
 - [ ] **Safe Zones**: In `9:16` vertical videos, are UI overlays (like TikTok/Reels buttons) clear of critical text?
 - [ ] **Companion Metadata (Optional)**: If requested or approved in the plan, generate companion upload metadata (e.g. titles, tags, descriptions, or chapter timestamps).
+- [ ] **Project Delivery**: Transfer the final video and assets into `<project_dir>/video-<short-title>-<datetime>/`.
+
+---
+
+## Output Storage & Project Delivery
+
+Always organize and deliver the final generated video and its assets into the user's project directory rather than leaving them buried inside the internal engine storage:
+
+### 1. Project Directory Resolution
+1. **Check for Active Project / Workspace Directory**:
+   - Check if an active workspace or project directory is present.
+2. **Fallback Prompt if No Project Directory Exists**:
+   - If no project directory or workspace is set/known, **prompt the user for the destination path before finalizing delivery**:
+     > *"No active project or workspace directory detected. Where would you like to save the generated video? (Please provide a destination folder path)"*
+
+### 2. Output Folder Naming Format
+Within the resolved project directory, create a dedicated folder named:
+```text
+video-<short-title>-<datetime>/
+```
+- `<short-title>`: A slugified 2–4 word title (e.g. `deep-sea-creatures`, `quantum-computing`).
+- `<datetime>`: Current timestamp formatted as `YYYYMMDD-HHMMSS` (e.g. `20261113-171530`).
+- *Example folder*: `video-deep-sea-creatures-20261113-171530/`
+
+### 3. Asset Delivery & Organization
+When the `video` command finishes rendering in MoneyPrinterTurbo's internal task storage:
+1. Create the timestamped folder in the project directory:
+   ```bash
+   mkdir -p "<project_dir>/video-<short-title>-<datetime>"
+   ```
+2. Copy the final video and accompanying generated assets from the engine's task directory (`storage/tasks/<task_id>/`) into the project folder:
+   - Final video: `final-1.mp4` $\rightarrow$ `<project_dir>/video-<short-title>-<datetime>/<short-title>.mp4`
+   - Subtitles: `subtitle.srt` $\rightarrow$ `<project_dir>/video-<short-title>-<datetime>/subtitles.srt`
+   - Voiceover audio: `audio.mp3` $\rightarrow$ `<project_dir>/video-<short-title>-<datetime>/audio.mp3`
+   - Script: `script.json` $\rightarrow$ `<project_dir>/video-<short-title>-<datetime>/script.json`
+3. Provide the user with the direct, clickable file link to the final `.mp4` inside their project directory.
 
 ---
 
@@ -303,5 +339,7 @@ When execution completes successfully:
    ```json
    {"task_id": "...", "result": {"videos": ["<output_path>/storage/tasks/<task_id>/final-1.mp4"]}}
    ```
-2. Verify the generated MP4 file exists and report the absolute path to the user.
-3. If an iteration is required (e.g. adjust speech rate or swap a term), rerun with the adjusted flags rather than rebuilding from scratch.
+2. Verify the generated MP4 file exists in internal task storage.
+3. Create `<project_dir>/video-<short-title>-<datetime>/` and transfer the final video and assets into it.
+4. Report the absolute clickable file link of the finalized video in the project directory to the user.
+5. If an iteration is required (e.g. adjust speech rate or swap a term), rerun with the adjusted flags rather than rebuilding from scratch.
