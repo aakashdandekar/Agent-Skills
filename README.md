@@ -1,4 +1,4 @@
-# Agent Skills (`Agent-Skills`)
+# Agent Skills
 
 A curated collection of production-ready, agentic skills designed for **Antigravity**, **Claude Code**, **Cursor**, **OpenAI Codex**, and **OpenCode**.
 
